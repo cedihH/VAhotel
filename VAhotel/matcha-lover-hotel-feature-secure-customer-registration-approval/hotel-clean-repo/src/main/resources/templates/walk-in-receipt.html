@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Walk-in receipt · mtchlvr hotel</title><link rel="stylesheet" href="/css/style.css">
+<style>
+.receipt{max-width:760px;margin:36px auto;background:#fff;padding:32px;border:1px solid #dce7d5;border-radius:14px}
+.receipt-row{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-bottom:1px solid #e5e9e2}
+.receipt-actions{display:flex;gap:12px;margin:20px auto;max-width:760px}
+@media print{.no-print,header,footer{display:none!important}.receipt{margin:0 auto;border:0;box-shadow:none;max-width:none}}
+</style></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="page-wrap">
+<div th:replace="~{fragments :: alerts}"></div>
+<div class="receipt">
+<span class="eyebrow">MTCHLVR HOTEL · WALK-IN RECEIPT</span>
+<h1 class="page-title">Reservation #<span th:text="${reservation.id}">1001</span></h1>
+<p><span class="status approved">APPROVED</span> <span class="status approved" th:if="${fullPaymentRecorded}">FULLY PAID</span></p>
+<h2>Guest details</h2>
+<div class="receipt-row"><strong>Guest</strong><span th:text="${reservation.walkInGuest.fullName}">Guest name</span></div>
+<div class="receipt-row"><strong>Email</strong><span th:text="${reservation.walkInGuest.email == null ? '—' : reservation.walkInGuest.email}">—</span></div>
+<div class="receipt-row"><strong>Phone</strong><span th:text="${reservation.walkInGuest.phone == null ? '—' : reservation.walkInGuest.phone}">—</span></div>
+<h2>Stay details</h2>
+<div class="receipt-row"><strong>Room</strong><span th:text="| ${reservation.room.type} · Room ${reservation.room.roomNumber}|">Room</span></div>
+<div class="receipt-row"><strong>Check-in</strong><span th:text="| ${reservation.checkIn} · 2:00 PM|">Check-in</span></div>
+<div class="receipt-row"><strong>Check-out</strong><span th:text="| ${reservation.checkOut} · 12:00 PM|">Check-out</span></div>
+<div class="receipt-row"><strong>Nights</strong><span th:text="${reservation.nights}">2</span></div>
+<div class="receipt-row"><strong>Reservation charge</strong><strong th:text="|₱${#numbers.formatDecimal(reservation.totalCost,1,'COMMA',2,'POINT')}|">₱0.00</strong></div>
+<h2>Payment record</h2>
+<div th:each="payment : ${payments}" class="receipt-row">
+<div><strong th:text="${payment.paymentType}">WALK_IN_FULL_PAYMENT</strong><small class="cell-sub" th:text="${payment.transactionReference}">Reference</small><small class="cell-sub" th:text="${payment.paidAt}">Paid at</small></div>
+<div style="text-align:right"><strong th:text="|₱${#numbers.formatDecimal(payment.amount,1,'COMMA',2,'POINT')}|">₱0.00</strong><small class="cell-sub" th:text="${payment.status}">PAID</small></div>
+</div>
+<p class="muted">Payment method: Nexus simulation. This receipt records the hotel's local payment entry and is not a bank or card processor receipt.</p>
+</div>
+<div class="receipt-actions no-print"><button class="button" type="button" onclick="window.print()">Print receipt</button><a class="button secondary" href="/manager/walk-ins/new">Record another walk-in</a><a class="button secondary" href="/manager">Dashboard</a></div>
+</main>
+<script src="/js/app.js"></script>
+</body></html>

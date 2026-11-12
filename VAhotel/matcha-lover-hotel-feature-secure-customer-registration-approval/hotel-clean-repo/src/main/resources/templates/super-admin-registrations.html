@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>mtchlvr hotel · Registration Review</title><link rel="stylesheet" href="/css/style.css">
+<style>
+body{background:#f7f8f1;color:#26392a}.review-wrap{width:min(1180px,calc(100% - 32px));margin:36px auto}.review-card{background:#fff;border:1px solid #dce7d5;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 8px 26px #315b3b0b}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.id-photo{width:100%;max-height:300px;object-fit:contain;background:#f4f7fa;border:1px solid #dce7d5;border-radius:10px}.meta{color:#667568;font-size:13px}.decision{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.decision label{flex:1;min-width:240px}.decision textarea{width:100%;min-height:65px}.pending{color:#a45b13;font-weight:800}.actions{display:flex;gap:10px;flex-wrap:wrap}.button.danger{background:#9e3f35;color:white}@media(max-width:700px){.review-grid{grid-template-columns:1fr}}
+</style></head>
+<body><main class="review-wrap"><a href="/" class="brand"><img class="brand-logo" src="/images/mtchlvr-leaf.svg" alt="mtchlvr hotel logo"><span>mtchlvr <small>HOTEL</small></span></a>
+<a href="/super-admin">← Super Admin dashboard</a><h1>Customer registration review</h1>
+<p>Only Super Admins can access this queue. Review both ID sides before approving an account.</p>
+<div th:if="${success}" class="alert success" th:text="${success}"></div><div th:if="${error}" class="alert error" th:text="${error}"></div>
+<h2>Pending applications</h2>
+<div th:if="${#lists.isEmpty(applications)}" class="review-card">There are no pending applications.</div>
+<article class="review-card" th:each="a : ${applications}">
+<div class="meta"><span class="pending">PENDING APPROVAL</span> · Application #<span th:text="${a.id}"></span> · <span th:text="${#temporals.format(a.createdAt,'MMM d, yyyy HH:mm')}"></span></div>
+<h3 th:text="${a.firstName+' '+a.lastName}">Applicant</h3><p th:text="${a.email}"></p><p class="meta">ID type: <strong th:text="${a.idType}"></strong></p>
+<div class="review-grid">
+<div><strong>Front of ID</strong><a th:href="@{/super-admin/registrations/{id}/id/front(id=${a.id})}" target="_blank" rel="noopener"><img class="id-photo" th:src="@{/super-admin/registrations/{id}/id/front(id=${a.id})}" alt="Front of submitted ID"></a></div>
+<div><strong>Back of ID</strong><a th:href="@{/super-admin/registrations/{id}/id/back(id=${a.id})}" target="_blank" rel="noopener"><img class="id-photo" th:src="@{/super-admin/registrations/{id}/id/back(id=${a.id})}" alt="Back of submitted ID"></a></div>
+</div>
+<div class="actions" style="margin-top:18px">
+<form th:action="@{/super-admin/registrations/{id}/approve(id=${a.id})}" method="post"><button class="button" type="submit">Approve and activate account</button></form>
+<form th:action="@{/super-admin/registrations/{id}/reject(id=${a.id})}" method="post" class="decision"><label>Reason for rejection<textarea name="reason" maxlength="1000" required placeholder="Explain what needs correction"></textarea></label><button class="button danger" type="submit">Reject</button></form>
+</div></article>
+<h2>Previously rejected applications</h2>
+<article class="review-card" th:each="a : ${rejectedApplications}"><strong th:text="${a.firstName+' '+a.lastName}"></strong> · <span th:text="${a.email}"></span><p class="meta" th:text="${a.reviewNote}"></p></article>
+</main></body></html>

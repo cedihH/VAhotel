@@ -1,0 +1,209 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="nav"><header class="nav">
+  <a class="brand" href="/"><img class="brand-logo" src="/images/mtchlvr-leaf.svg" alt=""><span>mtchlvr <small>HOTEL</small></span></a>
+  <nav class="main-nav-links">
+    <th:block sec:authorize="hasRole('CUSTOMER')">
+      <a class="customer-nav-action" href="/rooms">Browse rooms</a>
+      <a class="customer-nav-action" href="/customer/profile">My profile</a>
+      <a class="customer-nav-action" href="/customer/reservations#report" data-open-report>Send a report</a>
+    </th:block>
+
+    <th:block sec:authorize="hasAnyRole('MANAGER','ONLINE_MANAGER','ONSITE_MANAGER')">
+      <a href="/manager">Dashboard</a>
+      <a href="/manager/room-management">Room management</a>
+      <a href="/manager/history">Reservation history</a>
+      <a href="/manager/revenue">Revenue reports</a>
+      <a href="/manager/reports">Guest reports</a>
+      <a href="/manager/refunds">Refund requests</a>
+    </th:block>
+
+    <th:block sec:authorize="hasAnyRole('MANAGER','ONSITE_MANAGER')">
+      <a href="/manager/walk-ins/new">Record walk-in</a>
+      <a href="/manager/walk-ins/guests">Walk-in guests</a>
+    </th:block>
+
+    <th:block sec:authorize="hasAnyRole('MANAGER','ONLINE_MANAGER')">
+      <a href="/manager/reservation-requests">Reservation requests</a>
+      <a href="/manager/pencil-bookings">Pencil Booking reviews</a>
+    </th:block>
+  </nav>
+  <div class="nav-actions"><a class="text-button" href="/login" sec:authorize="isAnonymous()">Sign in</a><form th:action="@{/logout}" method="post" sec:authorize="isAuthenticated()" data-confirm="Are you sure you want to log out?"><button class="text-button" type="submit">Log out </button></form></div>
+</header><div th:replace="~{fragments :: managerConfirm}"></div></div>
+<div th:fragment="alerts" class="alerts">
+  <p class="alert success" th:if="${success}" th:text="${success}"></p>
+  <p class="alert error" th:if="${error}" th:text="${error}"></p>
+</div>
+<div th:fragment="managerConfirm" id="confirm-modal" class="confirm-backdrop" hidden role="dialog" aria-modal="true" aria-labelledby="confirm-title"><section class="confirm-card"><span class="eyebrow">PLEASE CONFIRM</span><h2 id="confirm-title">Are you sure?</h2><p data-confirm-message>Are you sure you want to continue?</p><div class="confirm-actions"><button type="button" class="button secondary" data-confirm-cancel>Go back</button><button type="button" class="button" data-confirm-proceed>Yes, continue</button></div></section></div>
+<div th:fragment="chatbot">
+  <meta name="_csrf" th:content="${_csrf.token}"><meta name="_csrf_header" th:content="${_csrf.headerName}">
+  <button id="chat-toggle" type="button" aria-label="Open hotel chat"><span class="chat-leaf" aria-hidden="true">m</span></button>
+
+  <section id="hotel-chat" hidden>
+    <header class="chat-header">
+      <div><strong>mtchlvr hotel concierge</strong><small>Here to help with your stay</small></div>
+      <button id="chat-close" type="button" aria-label="Close chat">×</button>
+    </header>
+    <div id="chat-messages" aria-live="polite">
+      <p class="bot-message">Hello! 👋 Ask me about our rooms, prices, amenities, or hotel policies.</p>
+    </div>
+    <form id="chat-form">
+      <input id="chat-input" type="text" maxlength="1000"
+             placeholder="Ask a question..." required autocomplete="off">
+      <button id="chat-send" type="submit">Send</button>
+    </form>
+  </section>
+
+  <style>
+#chat-toggle{position:fixed;right:24px;bottom:24px;width:60px;height:60px;border:1px solid #d8e2d1;border-radius:50%;background:#243b2b;color:#f6f1e7;cursor:pointer;box-shadow:0 12px 30px rgba(20,40,25,.22);z-index:9999;display:grid;place-items:center}
+.chat-leaf{font-family:Georgia,serif;font-style:italic;font-size:32px;line-height:1}
+#hotel-chat{position:fixed;right:24px;bottom:96px;width:min(370px,calc(100vw - 32px));height:460px;max-height:72vh;background:#fffdf8;border:1px solid #e4e0d5;border-radius:20px;box-shadow:0 20px 55px rgba(20,40,25,.18);z-index:9999;overflow:hidden;display:flex;flex-direction:column;color:#263328;font:14px Inter,system-ui,sans-serif}
+#hotel-chat[hidden]{display:none}
+#hotel-chat .chat-header{background:#243b2b;color:#f7f2e6;padding:17px 18px;display:flex;justify-content:space-between;align-items:center}
+#hotel-chat .chat-header strong,#hotel-chat .chat-header small{display:block}
+#hotel-chat .chat-header strong{font-size:14px;letter-spacing:.01em}
+#hotel-chat .chat-header small{margin-top:4px;opacity:.82;font-size:11px}
+#chat-close{background:none;border:0;color:#f7f2e6;font-size:25px;cursor:pointer}
+#chat-messages{padding:16px;flex:1;overflow-y:auto;background:#f7f5ee}
+#chat-messages .bot-message,#chat-messages .user-message{padding:11px 13px;border-radius:14px;max-width:86%;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.55;font-size:13px}
+#chat-messages .bot-message{background:#e9eee1;color:#2d4031;margin:0 0 10px}
+#chat-messages .user-message{background:#243b2b;color:white;margin:0 0 10px auto}
+#chat-form{display:flex;gap:8px;padding:12px;border-top:1px solid #e4e0d5;background:#fffdf8}
+#chat-input{min-width:0;flex:1;padding:12px 15px;border:1px solid #d9dfd3;border-radius:999px;background:#fff;color:#263328}
+#chat-send{background:#243b2b;color:white;border:0;border-radius:999px;padding:0 17px;cursor:pointer;font-weight:700}
+#chat-send:disabled{opacity:.6;cursor:wait}
+@media(max-width:580px){#chat-toggle{right:16px;bottom:16px}#hotel-chat{right:16px;bottom:86px}}
+.chat-action-wrap{display:flex;justify-content:flex-start;margin:-3px 0 12px}
+.chat-action-button{border:1px solid #cbd9c4;border-radius:999px;background:#243b2b;color:#fffdf8;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s ease,transform .2s ease}
+.chat-action-button:hover{background:#365b3e;transform:translateY(-1px)}
+.chat-action-button:focus-visible{outline:3px solid #9ab98e;outline-offset:3px}
+</style>
+
+  <script>
+    (() => {
+      const toggle = document.getElementById('chat-toggle');
+      const panel = document.getElementById('hotel-chat');
+      const close = document.getElementById('chat-close');
+      const form = document.getElementById('chat-form');
+      const input = document.getElementById('chat-input');
+      const messages = document.getElementById('chat-messages');
+      const send = document.getElementById('chat-send');
+
+      toggle.addEventListener('click', () => {
+        panel.hidden = !panel.hidden;
+        if (!panel.hidden) input.focus();
+      });
+      close.addEventListener('click', () => panel.hidden = true);
+
+      function addMessage(text, className) {
+        const p = document.createElement('p');
+        p.className = className;
+        p.textContent = text;
+        messages.appendChild(p);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      function renderChatAction(action) {
+        if (!action || typeof action.label !== 'string') return;
+
+        const allowedPaths = [
+          '/rooms',
+          '/customer/reservations',
+          '/manager',
+          '/manager/reservation-requests',
+          '/manager/pencil-bookings',
+          '/manager/room-management',
+          '/manager/history',
+          '/manager/reports'
+        ];
+
+        if (action.id === 'navigate' && !allowedPaths.includes(action.url)) return;
+        if (action.id !== 'navigate' && action.id !== 'logout') return;
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'chat-action-wrap';
+
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'chat-action-button';
+        button.textContent = action.label;
+
+        button.addEventListener('click', () => {
+          if (action.id === 'logout') {
+            if (!window.confirm('Are you sure you want to log out?')) return;
+
+            const token = document.querySelector('meta[name="_csrf"]')?.content;
+            const parameterName = document.querySelector('meta[name="_csrf_parameter"]')?.content || '_csrf';
+
+            if (!token) {
+              addMessage('I could not verify the logout request. Please use the Log out button in the navigation.', 'bot-message');
+              return;
+            }
+
+            const logoutForm = document.createElement('form');
+            logoutForm.method = 'POST';
+            logoutForm.action = '/logout';
+
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = parameterName;
+            csrf.value = token;
+
+            logoutForm.appendChild(csrf);
+            document.body.appendChild(logoutForm);
+            logoutForm.submit();
+            return;
+          }
+
+          if (action.id === 'navigate') {
+            window.location.assign(action.url);
+          }
+        });
+
+        wrapper.appendChild(button);
+        messages.appendChild(wrapper);
+        messages.scrollTop = messages.scrollHeight;
+      }
+
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+        const message = input.value.trim();
+        if (!message || send.disabled) return;
+
+        addMessage(message, 'user-message');
+        input.value = '';
+        send.disabled = true;
+        addMessage('Thinking…', 'bot-message');
+        const thinking = messages.lastElementChild;
+
+        try {
+          const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              [document.querySelector('meta[name="_csrf_header"]')?.content || 'X-CSRF-TOKEN']: document.querySelector('meta[name="_csrf"]')?.content || ''
+            },
+            body: JSON.stringify({ message })
+          });
+          const data = await response.json();
+          thinking.remove();
+          if (!response.ok) throw new Error('Request failed');
+          addMessage(data.reply || 'Sorry, I could not answer that.', 'bot-message');
+          if (Array.isArray(data.actions)) {
+            data.actions.forEach(renderChatAction);
+          }
+        } catch (error) {
+          thinking.remove();
+          addMessage(error.message === "Request failed" ? "The chat service could not answer. Check that GROQ_API_KEY is set in your Codespace and restart the app." : "Sorry, chat is temporarily unavailable. Please try again.", 'bot-message');
+        } finally {
+          send.disabled = false;
+          input.focus();
+        }
+      });
+    })();
+  </script>
+</div>
+
+</body>
+</html>

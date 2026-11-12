@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pencil Booking refund · mtchlvr hotel</title><link rel="stylesheet" href="/css/style.css"></head>
+<body><div th:replace="~{fragments :: nav}"></div>
+<main class="page-wrap manager-page"><div th:replace="~{fragments :: alerts}"></div>
+<section class="manager-content">
+<span class="eyebrow">PENCIL BOOKING SUPPORT</span><h1 class="page-title">Refund request</h1>
+<p>Your Pencil Booking became VOID because it was not reviewed before its scheduled check-in. You may submit one refund request for the successful payment recorded for this reservation.</p>
+<div class="table-wrap"><table><tbody>
+<tr><th>Reservation</th><td th:text="${reservation.id}">1</td></tr>
+<tr><th>Room</th><td th:text="| ${reservation.room.type} · ${reservation.room.roomNumber}|">Room</td></tr>
+<tr><th>Stay</th><td th:text="| ${reservation.checkIn} – ${reservation.checkOut}|">Dates</td></tr>
+<tr><th>Status</th><td>VOID</td></tr>
+</tbody></table></div>
+<div th:if="${refundRequest == null}" class="manager-section">
+<h2>Submit refund request</h2>
+<p class="muted">The manager must review your request. If approved, the hotel will process the recorded payment in the local Nexus simulation. No real payment gateway is connected.</p>
+<form th:action="@{'/customer/reservations/' + ${reservation.id} + '/refund'}" method="post" data-confirm="Submit this Pencil Booking refund request?">
+<button class="button" type="submit">Request refund</button>
+</form>
+</div>
+<div th:if="${refundRequest != null}" class="manager-section">
+<h2>Refund request already submitted</h2>
+<p><strong>Request #</strong> <span th:text="${refundRequest.id}">1</span></p>
+<p><strong>Amount requested:</strong> <span th:text="|₱${#numbers.formatDecimal(refundRequest.amount,1,'COMMA',2,'POINT')}|">₱0.00</span></p>
+<p><strong>Status:</strong> <span class="status" th:text="${refundRequest.status}">REQUESTED</span></p>
+<p class="muted" th:if="${refundRequest.managerNote != null}" th:text="${refundRequest.managerNote}">Manager note</p>
+</div>
+<a class="button secondary" href="/customer/reservations">Back to my reservations</a>
+</section></main><script src="/js/app.js"></script></body></html>

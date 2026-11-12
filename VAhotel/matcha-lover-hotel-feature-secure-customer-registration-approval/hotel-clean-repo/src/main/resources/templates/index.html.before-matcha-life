@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>mtchlvr hotel — A quieter kind of luxury</title>
+<link rel="stylesheet" href="/css/style.css">
+<meta name="_csrf" th:content="${_csrf.token}">
+<meta name="_csrf_header" th:content="${_csrf.headerName}">
+</head>
+<body>
+<header class="nav">
+  <a class="brand" href="/">
+    <img class="brand-logo" src="/images/mtchlvr-leaf.svg" alt="">
+    <span>mtchlvr <small>HOTEL</small></span>
+  </a>
+  <nav>
+    <a sec:authorize="isAuthenticated()" href="/rooms">Explore rooms</a>
+    <a sec:authorize="hasRole('CUSTOMER')" href="/customer/reservations">My bookings</a>
+  </nav>
+  <div class="nav-actions">
+    <span sec:authorize="isAnonymous()">
+      <a class="text-button" href="/login">Sign in</a>
+      <a class="button small" href="/register">Create account</a>
+    </span>
+    <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" data-confirm="Are you sure you want to log out?" style="display:inline">
+      <button class="text-button" type="submit">Log out</button>
+    </form>
+  </div>
+</header>
+<main>
+  <section class="hero hero-city">
+    <div class="hero-copy">
+      <span class="eyebrow">A CALMER KIND OF GETAWAY</span>
+      <h1>Stay in comfort.<br>Live the <em>matcha life.</em></h1>
+      <p class="hero-copy-lead">A welcoming place to slow down, rest well, and enjoy the little details.</p>
+      <div class="hero-actions">
+        <a class="button" href="/rooms">Explore our rooms <span aria-hidden="true"></span></a>
+        <a class="text-button" href="/customer/reservations" sec:authorize="hasRole('CUSTOMER')">My reservations</a>
+      </div>
+    </div>
+    <div class="hero-art photo-hero">
+      <img class="hero-photo" src="https://images.pexels.com/photos/16094034/pexels-photo-16094034.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=1400&amp;h=1000&amp;fit=crop" alt="The original ivy-covered hotel facade" fetchpriority="high">
+      <div class="photo-overlay"></div>
+    </div>
+  </section>
+</main>
+<footer>
+  <a class="brand" href="/">
+    <img class="brand-logo" src="/images/mtchlvr-leaf.svg" alt="">
+    <span>mtchlvr <small>HOTEL</small></span>
+  </a>
+  <span>Made for the moments in between.</span>
+  <span>© 2026 mtchlvr hotel</span>
+</footer>
+<div th:replace="~{fragments :: managerConfirm}"></div>
+<script src="/js/app.js"></script>
+<div th:replace="~{fragments :: chatbot}"></div>
+</body>
+</html>

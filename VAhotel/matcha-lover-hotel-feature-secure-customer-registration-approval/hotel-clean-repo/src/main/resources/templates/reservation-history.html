@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reservation history · mtchlvr hotel</title><link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="page-wrap manager-page">
+<div th:replace="~{fragments :: alerts}"></div>
+<div class="manager-layout">
+<section class="manager-content">
+<h1 class="page-title">Reservation history</h1>
+<p class="muted">Search old and recent reservations by guest, email, room, status, or reservation ID. Filter by day, week, month, or year.</p>
+<form class="history-search-form" th:action="@{/manager/history}" method="get">
+<label>Search history<input type="search" name="q" th:value="${searchQuery}" placeholder="Guest name, email, room, status, or ID"></label>
+<label>Time range<select name="period">
+<option value="all" th:selected="${period == 'all'}">All dates</option>
+<option value="day" th:selected="${period == 'day'}">Day</option>
+<option value="week" th:selected="${period == 'week'}">Week</option>
+<option value="month" th:selected="${period == 'month'}">Month</option>
+<option value="year" th:selected="${period == 'year'}">Year</option>
+</select></label>
+<label>Reference date<input type="date" name="date" th:value="${referenceDate}" aria-label="Reference date"></label>
+<button class="button tiny" type="submit">Search</button>
+<a class="button secondary tiny" href="/manager/history">Clear filters</a>
+</form>
+<div class="section-heading" style="margin-top:22px">
+<span class="muted" th:text="${#lists.size(reservations)} + ' matching records'">Matching records</span>
+<form th:if="${!#lists.isEmpty(reservations)}" th:action="@{/manager/history/clear}" method="post" data-confirm="Permanently delete all processed history? Pending requests will remain. This cannot be undone.">
+<button class="button tiny" type="submit">Delete all history</button>
+</form>
+</div>
+<div th:if="${#lists.isEmpty(reservations)}" class="empty-state"><h2>No matching history.</h2><p>Try a different search term or date range.</p></div>
+<div class="table-wrap" th:unless="${#lists.isEmpty(reservations)}">
+<table>
+<thead><tr><th>Reservation ID</th><th>Guest</th><th>Customer ID</th><th>Room</th><th>Stay dates</th><th>Status</th><th>Action</th></tr></thead>
+<tbody>
+<tr th:each="r : ${reservations}">
+<td th:text="${r.id}">1</td>
+<td>
+    <strong th:if="${r.customer != null}" th:text="${r.customer.fullName}">Registered guest</strong>
+    <strong th:if="${r.walkInGuest != null}" th:text="${r.walkInGuest.fullName}">Walk-in guest</strong>
+    <small class="cell-sub" th:if="${r.customer != null}" th:text="${r.customer.email}">Email</small>
+    <small class="cell-sub" th:if="${r.walkInGuest != null and r.walkInGuest.email != null}" th:text="${r.walkInGuest.email}">Walk-in email</small>
+    <small class="cell-sub" th:if="${r.walkInGuest != null and r.walkInGuest.phone != null}" th:text="${r.walkInGuest.phone}">Walk-in phone</small>
+</td>
+<td>
+    <span class="customer-code" th:if="${r.customer != null}" th:text="${r.customer.customerCode}">Customer ID</span>
+    <span class="customer-code" th:if="${r.walkInGuest != null}">WALK-IN</span>
+</td>
+<td th:text="${r.room.type} + ' · ' + ${r.room.roomNumber}">Room</td>
+<td th:text="${r.checkIn} + '  –  ' + ${r.checkOut}">Dates</td>
+<td><span class="status" th:text="${r.status == 'COMPLETED' ? 'Checked Out' : r.status}" th:classappend="${r.status.toLowerCase()}">APPROVED</span></td>
+<td><a class="button tiny secondary" th:href="@{'/manager/reservations/' + ${r.id} + '/receipt'}">Receipt</a> <form th:action="@{'/manager/history/' + ${r.id} + '/delete'}" method="post" data-confirm="Permanently delete this history record? This cannot be undone."><button class="button tiny" type="submit">Delete</button></form></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</div>
+</main>
+<script src="/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Manager · mtchlvr hotel</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div th:replace="~{fragments :: nav}"></div>
+
+    <main class="page-wrap manager-page">
+        <div th:replace="~{fragments :: alerts}"></div>
+
+        <div class="manager-layout">
+            <section class="manager-content">
+                <h1 class="page-title">Manager dashboard</h1>
+
+                <section class="manager-overview-panel">
+                <div id="overview" class="stats-grid">
+                    <div class="stat-card">
+                        <span>Total rooms</span>
+                        <strong th:text="${#lists.size(rooms)}">12</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Total reservations</span>
+                        <strong th:text="${#lists.size(reservations)}">0</strong>
+                    </div>
+
+                    <div class="stat-card">
+                        <span>Pending review</span>
+                        <strong th:text="${#lists.size(reservations.?[status == 'PENDING' or status == 'CANCELLATION_REQUESTED'])}">0</strong>
+                    </div>
+                </div>
+
+                <section class="manager-section" id="occupancy">
+                    <div class="section-heading">
+                        <div><span class="eyebrow">ROOM SCHEDULE</span><h2>Occupancy &amp; reservation details</h2></div>
+                    </div>
+                    <p class="muted">Only guests whose approved stays are currently in progress appear here.</p>
+                    <div class="table-wrap"><table>
+                        <thead><tr><th>Room details</th><th>Occupant guest</th><th>Check-in</th><th>Check-out</th><th>Nights</th><th>Room charge</th><th>Status</th><th>Action</th></tr></thead>
+                        <tbody>
+                            <tr th:each="r : ${occupancyReservations}">
+                                <td><strong th:text="|${r.room.type} · ${r.room.roomNumber}|">Deluxe · 201</strong>
+                                    <span class="cell-sub" th:text="|₱${#numbers.formatDecimal(r.room.nightlyRate,1,'COMMA',2,'POINT')} per night|">₱1,800.00 per night</span></td>
+                                <td>
+                                    <strong th:if="${r.customer != null}" th:text="${r.customer.fullName}">Registered guest</strong>
+                                    <strong th:if="${r.walkInGuest != null}" th:text="${r.walkInGuest.fullName}">Walk-in guest</strong>
+                                    <small class="cell-sub" th:if="${r.customer != null}" th:text="${r.customer.customerCode}">Customer ID</small>
+                                    <small class="cell-sub" th:if="${r.walkInGuest != null}">WALK-IN</small>
+                                </td>
+                                <td th:text="${r.checkIn}">2026-10-14</td>
+                                <td th:text="${r.checkOut}">2026-10-16</td>
+                                <td th:text="${r.nights}">2</td>
+                                <td th:text="|₱${#numbers.formatDecimal(r.totalCost,1,'COMMA',2,'POINT')}|">₱3,600.00</td>
+                                <td><span class="status" th:text="'CHECKED IN'" th:classappend="${r.status.toLowerCase()}">PENDING</span></td><td><form th:action="@{'/manager/reservations/' + ${r.id} + '/checkout'}" method="post" data-confirm="Process checkout now? This finalizes the stay and releases the room."><button class="button tiny" type="submit">Process checkout</button></form> <a class="button tiny secondary" th:href="@{'/manager/reservations/' + ${r.id} + '/receipt'}">Receipt</a></td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(occupancyReservations)}"><td colspan="8" class="muted">No active reservation dates to display.</td></tr>
+                        </tbody>
+                    </table></div>
+                </section>
+                </section>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <a class="brand" href="/">
+            <img class="brand-logo" src="/images/mtchlvr-leaf.svg" alt="">
+            <span>mtchlvr <small>HOTEL</small></span>
+        </a>
+        <span>© 2026 mtchlvr hotel</span>
+    </footer>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

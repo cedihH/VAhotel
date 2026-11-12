@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Reservation requests · mtchlvr hotel</title><link rel="stylesheet" href="/css/style.css"></head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="page-wrap manager-page">
+<div th:replace="~{fragments :: alerts}"></div>
+<div class="manager-layout">
+<section class="manager-content">
+<h1 class="page-title">Reservation &amp; cancellation requests</h1>
+<div th:if="${#lists.isEmpty(reservations.?[status == 'PENDING' or status == 'CANCELLATION_REQUESTED' or stayRequestStatus == 'PENDING'])}" class="empty-state"><h2>No requests to review.</h2></div>
+<div class="table-wrap" th:unless="${#lists.isEmpty(reservations.?[status == 'PENDING' or status == 'CANCELLATION_REQUESTED' or stayRequestStatus == 'PENDING'])}">
+<table><thead><tr><th>Guest</th><th>Customer ID</th><th>Room</th><th>Dates / request</th><th>Status</th><th>Decision</th></tr></thead><tbody>
+<tr th:each="r : ${reservations}" th:if="${r.status == 'PENDING' or r.status == 'CANCELLATION_REQUESTED' or r.stayRequestStatus == 'PENDING'}">
+<td><strong th:text="${r.customer.fullName}">Guest</strong><small class="cell-sub" th:text="${r.customer.email}">Email</small></td>
+<td><span class="customer-code" th:text="${r.customer.customerCode}">mtchlvr-0000-5201314</span></td>
+<td th:text="${r.room.type} + ' · ' + ${r.room.roomNumber}">Room</td>
+<td><span th:text="${r.checkIn} + '  –  ' + ${r.checkOut}">Dates</span></td>
+<td><span class="status" th:text="${r.status}" th:classappend="${r.status.toLowerCase()}">PENDING</span></td>
+<td>
+<form th:if="${r.status == 'PENDING' or r.status == 'CANCELLATION_REQUESTED'}" th:action="@{'/manager/reservations/' + ${r.id} + '/status'}" method="post" class="inline-form" data-confirm="Confirm this reservation decision?">
+<select name="status" aria-label="New reservation status"><option value="APPROVED" th:if="${r.status == 'PENDING'}">Approve</option><option value="REJECTED" th:if="${r.status == 'PENDING'}">Reject</option><option value="CANCELLED" th:if="${r.status == 'CANCELLATION_REQUESTED'}">Confirm cancellation</option><option value="APPROVED" th:if="${r.status == 'CANCELLATION_REQUESTED'}">Keep reservation</option></select><button class="button tiny" type="submit">Save</button>
+</form><form th:if="${r.stayRequestStatus == 'PENDING'}" th:action="@{'/manager/reservations/' + ${r.id} + '/stay-request'}" method="post"><p th:text="${r.stayRequestType + ' · ' + r.stayRequestDate}"></p><button class="button tiny" name="decision" value="APPROVED">Approve stay request</button> <button class="button tiny secondary" name="decision" value="REJECTED">Reject</button></form>
+</td>
+</tr>
+</tbody></table></div>
+</section></div></main><script src="/js/app.js"></script></body></html>

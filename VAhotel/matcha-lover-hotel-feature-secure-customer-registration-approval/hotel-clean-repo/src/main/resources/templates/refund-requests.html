@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Refund requests · mtchlvr hotel</title><link rel="stylesheet" href="/css/style.css"></head>
+<body><div th:replace="~{fragments :: nav}"></div>
+<main class="page-wrap manager-page"><div th:replace="~{fragments :: alerts}"></div>
+<section class="manager-content"><span class="eyebrow">MANAGER WORKSPACE</span><h1 class="page-title">Pencil Booking refund requests</h1>
+<p>Review customer refund requests for Pencil Bookings voided at check-in after the 72-hour manager review window. Processing updates the local simulated payment records only.</p>
+<div th:if="${#lists.isEmpty(refundRequests)}" class="empty-state"><h2>No refund requests.</h2></div>
+<div class="table-wrap" th:unless="${#lists.isEmpty(refundRequests)}"><table><thead><tr><th>Guest</th><th>Reservation</th><th>Amount</th><th>Submitted</th><th>Status</th><th>Manager action</th></tr></thead><tbody>
+<tr th:each="request : ${refundRequests}">
+<td><strong th:text="${request.reservation.customer.fullName}">Guest</strong><small class="cell-sub" th:text="${request.reservation.customer.email}">Email</small></td>
+<td><span th:text="${request.reservation.id}">1</span><small class="cell-sub" th:text="| ${request.reservation.checkIn} – ${request.reservation.checkOut}|">Dates</small></td>
+<td th:text="|₱${#numbers.formatDecimal(request.amount,1,'COMMA',2,'POINT')}|">₱0.00</td>
+<td th:text="${request.createdAt}">Date</td>
+<td><span class="status" th:text="${request.status}">REQUESTED</span><small class="cell-sub" th:if="${request.managerNote != null}" th:text="${request.managerNote}">Note</small></td>
+<td>
+<form th:if="${request.status == 'REQUESTED'}" th:action="@{'/manager/refunds/' + ${request.id} + '/review'}" method="post" class="stack-form">
+<label>Manager note (optional)<input name="managerNote" maxlength="500"></label>
+<div class="inline-form"><button class="button tiny" name="decision" value="APPROVED" type="submit">Approve</button><button class="button tiny secondary" name="decision" value="REJECTED" type="submit">Reject</button></div>
+</form>
+<form th:if="${request.status == 'APPROVED'}" th:action="@{'/manager/refunds/' + ${request.id} + '/process'}" method="post" data-confirm="Process this approved refund in the local simulation?">
+<button class="button tiny" type="submit">Process refund</button>
+</form>
+<span th:if="${request.status == 'PROCESSED' or request.status == 'REJECTED'}" class="muted">No further action</span>
+</td></tr></tbody></table></div>
+</section></main><script src="/js/app.js"></script></body></html>

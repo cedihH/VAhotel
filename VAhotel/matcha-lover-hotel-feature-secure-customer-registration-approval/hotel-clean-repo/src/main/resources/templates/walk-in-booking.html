@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Record walk-in · mtchlvr hotel</title><link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<div th:replace="~{fragments :: nav}"></div>
+<main class="page-wrap manager-page">
+<div th:replace="~{fragments :: alerts}"></div>
+<section class="manager-content">
+<span class="eyebrow">ON-SITE MANAGER</span>
+<h1 class="page-title">Record a walk-in guest.</h1>
+<p class="lead">Enter the guest and stay details. Walk-in reservations are approved immediately and require full payment.</p>
+<form th:action="@{/manager/walk-ins}" method="post" class="stack-form" style="max-width:680px">
+<label>Guest full name<input type="text" name="fullName" maxlength="150" required autocomplete="name"></label>
+<label>Email (optional)<input type="email" name="email" maxlength="160" autocomplete="email"></label>
+<label>Phone number (optional)<input type="tel" name="phone" maxlength="40" autocomplete="tel"></label>
+<label>Room<select name="roomId" required><option value="">Choose an available room</option><option th:each="room : ${rooms}" th:value="${room.id}" th:text="|Room ${room.roomNumber} · ${room.type} · ₱${#numbers.formatDecimal(room.nightlyRate,1,'COMMA',2,'POINT')} / night|">Room</option></select></label>
+<div class="grid" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+<label>Check-in date<input type="date" name="checkIn" required></label>
+<p class="stay-times">Check-in: <strong>2:00 PM</strong></p>
+<label>Check-out date<input type="date" name="checkOut" required></label>
+<p class="stay-times">Check-out: <strong>12:00 PM</strong></p>
+</div>
+<p class="muted">The system checks room availability before saving. It records one full walk-in payment through the Nexus simulation; it does not charge a real payment method.</p>
+<div class="inline-form"><button class="button" type="submit">Save walk-in and record full payment</button><a class="button secondary" href="/manager">Cancel</a></div>
+</form>
+</section>
+</main>
+<script src="/js/app.js"></script>
+</body></html>
