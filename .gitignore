@@ -1,0 +1,25 @@
+# Java / Maven
+**/target/
+*.class
+
+# Local databases and backups
+**/data/*.db
+**/data/*.db-shm
+**/data/*.db-wal
+*.bak
+*.bak-*
+
+# Node and browser testing artifacts
+**/node_modules/
+**/playwright-report/
+**/test-results/
+
+# Local environment files
+.env
+.env.*
+!.env.example
+**/local-secrets.properties
+
+# Private identity verification documents and uploaded room photos
+**/private-uploads/
+**/uploads/rooms/

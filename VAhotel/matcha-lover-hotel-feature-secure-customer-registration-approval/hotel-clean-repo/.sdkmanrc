@@ -1,0 +1,2 @@
+# Keep the local development runtime aligned with pom.xml.
+java=21.0.13.0+2-ms

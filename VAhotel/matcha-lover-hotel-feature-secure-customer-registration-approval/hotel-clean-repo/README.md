@@ -6,6 +6,16 @@ Hotel reservations and management app built with Java 21, Spring Boot, Maven, SQ
 
 Requirements: JDK 21 and Maven 3.9 or newer.
 
+This project includes an `.sdkmanrc` selecting JDK 21. If SDKMAN is installed, activate it from this directory with:
+
+```bash
+source "$SDKMAN_DIR/bin/sdkman-init.sh"
+sdk env install
+sdk env
+```
+
+The first command installs the selected JDK if needed; the second switches the current shell to it.
+
 From this project directory:
 
 ```bash
@@ -19,6 +29,10 @@ To run the tests:
 ```bash
 mvn test
 ```
+
+## Portal accounts
+
+The normal application profile can create persistent portal accounts on startup. Configure strong passwords for `CUSTOMER_PORTAL_PASSWORD`, `ONSITE_MANAGER_PORTAL_PASSWORD`, `ONLINE_MANAGER_PORTAL_PASSWORD`, and `SUPER_ADMIN_PORTAL_PASSWORD` in Codespaces secrets or the ignored `local-secrets.properties` file. The corresponding usernames are `cedihCustomer`, `cedihOnsite`, `cedihOnline`, and `cedihAdmin`. The accounts are created only when missing; existing passwords are never reset. Use separate passwords, and do not configure these convenience accounts in a deployed environment. The Super Admin account is optional; production admin setup should use `INITIAL_SUPER_ADMIN_EMAIL` and `INITIAL_SUPER_ADMIN_PASSWORD`.
 
 ## Features
 

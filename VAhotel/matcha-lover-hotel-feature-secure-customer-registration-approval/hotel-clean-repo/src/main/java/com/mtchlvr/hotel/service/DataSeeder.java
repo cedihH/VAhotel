@@ -19,7 +19,11 @@ public class DataSeeder {
             @Value("${hotel.initial-manager.email:}") String managerEmail,
             @Value("${hotel.initial-manager.password:}") String managerPassword,
             @Value("${hotel.initial-manager.name:Hotel Manager}") String managerName,
-            @Value("${hotel.initial-manager.role:MANAGER}") String managerRole) {
+            @Value("${hotel.initial-manager.role:MANAGER}") String managerRole,
+            @Value("${hotel.portal-accounts.customer.password:}") String customerPassword,
+            @Value("${hotel.portal-accounts.onsite.password:}") String onsitePassword,
+            @Value("${hotel.portal-accounts.online.password:}") String onlinePassword,
+            @Value("${hotel.portal-accounts.admin.password:}") String adminPassword) {
         return args -> {
             // Seed each missing room independently so a partially populated database is repaired.
             addType(rooms, "Standard", "1", new BigDecimal("1800"), 2);
@@ -32,7 +36,17 @@ public class DataSeeder {
                 throw new IllegalStateException("hotel.initial-manager.role must be MANAGER, ONLINE_MANAGER, or ONSITE_MANAGER.");
             }
             provisionAccount(users, encoder, passwordPolicy, managerEmail, managerPassword, managerName, normalizedManagerRole);
+            provisionPortalAccount(users, encoder, passwordPolicy, customerPassword, "cedihCustomer", "Customer Portal", "CUSTOMER");
+            provisionPortalAccount(users, encoder, passwordPolicy, onsitePassword, "cedihOnsite", "On-Site Manager", "ONSITE_MANAGER");
+            provisionPortalAccount(users, encoder, passwordPolicy, onlinePassword, "cedihOnline", "Online Manager", "ONLINE_MANAGER");
+            provisionPortalAccount(users, encoder, passwordPolicy, adminPassword, "cedihAdmin", "Super Admin Portal", "SUPER_ADMIN");
         };
+    }
+
+    private void provisionPortalAccount(UserRepository users, PasswordEncoder encoder, PasswordPolicy policy,
+            String password, String username, String name, String role) {
+        if (password == null || password.isBlank()) return;
+        provisionAccount(users, encoder, policy, username, password, name, role);
     }
 
     private void provisionAccount(UserRepository users, PasswordEncoder encoder, PasswordPolicy policy,
@@ -40,8 +54,9 @@ public class DataSeeder {
         String email = configuredEmail == null ? "" : configuredEmail.trim().toLowerCase(Locale.ROOT);
         String password = configuredPassword == null ? "" : configuredPassword;
         if (email.isBlank() && password.isBlank()) return;
-        if (email.isBlank() || password.isBlank() || !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$")) {
-            throw new IllegalStateException("Both a valid email and password are required to bootstrap " + role + ".");
+        if (email.isBlank() || password.isBlank() || email.chars().anyMatch(Character::isWhitespace)
+                || (email.contains("@") && !email.matches("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$"))) {
+            throw new IllegalStateException("A valid login name and password are required to bootstrap " + role + ".");
         }
         if (!policy.isValid(password)) {
             throw new IllegalStateException("The bootstrap password for " + role + " does not meet the configured password policy.");
