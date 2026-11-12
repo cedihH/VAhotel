@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>mtchlvr hotel · Registration Review</title><link rel="stylesheet" href="/css/style.css">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>VA Hotel · Registration Review</title><link rel="stylesheet" href="/css/style.css">
 <style>
-body{background:#f7f8f1;color:#26392a}.review-wrap{width:min(1180px,calc(100% - 32px));margin:36px auto}.review-card{background:#fff;border:1px solid #dce7d5;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 8px 26px #315b3b0b}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.id-photo{width:100%;max-height:300px;object-fit:contain;background:#f4f7fa;border:1px solid #dce7d5;border-radius:10px}.meta{color:#667568;font-size:13px}.decision{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.decision label{flex:1;min-width:240px}.decision textarea{width:100%;min-height:65px}.pending{color:#a45b13;font-weight:800}.actions{display:flex;gap:10px;flex-wrap:wrap}.button.danger{background:#9e3f35;color:white}@media(max-width:700px){.review-grid{grid-template-columns:1fr}}
+body{background:#f3f7fb;color:#18334d}.review-wrap{width:min(1180px,calc(100% - 32px));margin:36px auto}.review-card{background:#fff;border:1px solid #DCE5ED;border-radius:16px;padding:22px;margin:18px 0;box-shadow:0 8px 26px #12365A0b}.review-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.id-photo{width:100%;max-height:300px;object-fit:contain;background:#f3f7fb;border:1px solid #DCE5ED;border-radius:10px}.meta{color:#65788b;font-size:13px}.decision{display:flex;gap:12px;align-items:end;flex-wrap:wrap}.decision label{flex:1;min-width:240px}.decision textarea{width:100%;min-height:65px}.pending{color:#a84d0a;font-weight:800}.actions{display:flex;gap:10px;flex-wrap:wrap}.button.danger{background:#9e3f35;color:white}@media(max-width:700px){.review-grid{grid-template-columns:1fr}}
 </style></head>
-<body><main class="review-wrap"><a href="/" class="brand"><img class="brand-logo" src="/images/mtchlvr-leaf.svg" alt="mtchlvr hotel logo"><span>mtchlvr <small>HOTEL</small></span></a>
-<a href="/super-admin">← Super Admin dashboard</a><h1>Customer registration review</h1>
+<body><main class="review-wrap"><a href="/" class="brand"><img class="brand-logo" src="/images/va-monogram-hd.svg" alt="VA Hotel logo"><span>VA <small>HOTEL</small></span></a>
+<a href="/super-admin"> Super Admin dashboard</a><h1>Customer registration review</h1>
 <p>Only Super Admins can access this queue. Review both ID sides before approving an account.</p>
 <div th:if="${success}" class="alert success" th:text="${success}"></div><div th:if="${error}" class="alert error" th:text="${error}"></div>
 <h2>Pending applications</h2>

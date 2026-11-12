@@ -1,11 +1,13 @@
 package com.mtchlvr.hotel.service;
 
 import com.mtchlvr.hotel.model.AppUser;
+import com.mtchlvr.hotel.model.Payment;
 import com.mtchlvr.hotel.model.Reservation;
 import com.mtchlvr.hotel.model.Room;
 import com.mtchlvr.hotel.repo.ReservationRepository;
 import com.mtchlvr.hotel.repo.RoomRepository;
 import com.mtchlvr.hotel.repo.UserRepository;
+import com.mtchlvr.hotel.repo.PaymentRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -24,6 +26,7 @@ class ReservationServiceTest {
     private ReservationRepository reservations;
     private RoomRepository rooms;
     private UserRepository users;
+    private PaymentRepository payments;
     private ReservationService service;
 
     @BeforeEach
@@ -31,7 +34,8 @@ class ReservationServiceTest {
         reservations = mock(ReservationRepository.class);
         rooms = mock(RoomRepository.class);
         users = mock(UserRepository.class);
-        service = new ReservationService(reservations, rooms, users);
+        payments = mock(PaymentRepository.class);
+        service = new ReservationService(reservations, rooms, users, payments, new ReservationMutationLock());
     }
 
     @Test
@@ -229,6 +233,27 @@ class ReservationServiceTest {
     }
 
     @Test
+    void automaticallyVoidsPencilBookingWhenReviewWindowExpiresBeforeCheckIn() {
+        Reservation expiredPencil = mock(Reservation.class);
+        when(expiredPencil.getId()).thenReturn(31L);
+        when(expiredPencil.getStatus()).thenReturn("PENCIL_PENDING_REVIEW");
+        when(expiredPencil.getCheckIn()).thenReturn(LocalDate.now(
+                java.time.ZoneId.of("Asia/Manila")).plusDays(5));
+        when(expiredPencil.getCheckInTime()).thenReturn(LocalTime.of(14, 0));
+        Payment downPayment = new Payment(expiredPencil, new java.math.BigDecimal("500.00"),
+                "PENCIL_DOWN_PAYMENT", "NEXUS_SIMULATION", "PAID", "TEST",
+                java.time.Instant.now().minus(java.time.Duration.ofHours(73)));
+        when(payments.findByReservationIdAndPaymentTypeAndStatus(
+                31L, "PENCIL_DOWN_PAYMENT", "PAID")).thenReturn(Optional.of(downPayment));
+        when(reservations.findAll()).thenReturn(List.of(expiredPencil));
+
+        service.voidExpiredPendingReservations();
+
+        verify(expiredPencil).setStatus("VOID");
+        verify(reservations).saveAll(anyList());
+    }
+
+    @Test
     void automaticallyVoidsExpiredPendingCancellationRequests() {
         java.time.ZoneId zone = java.time.ZoneId.of("Asia/Manila");
         Reservation expired = mock(Reservation.class);
@@ -317,9 +342,15 @@ class ReservationServiceTest {
         Reservation pencil = mock(Reservation.class);
 
         // The review period may have passed, but check-in is still in the future.
+        when(pencil.getId()).thenReturn(32L);
         when(pencil.getStatus()).thenReturn("PENCIL_PENDING_REVIEW");
         when(pencil.getCheckIn()).thenReturn(LocalDate.now(zone).plusDays(2));
         when(pencil.getCheckInTime()).thenReturn(LocalTime.of(14, 0));
+        Payment downPayment = new Payment(pencil, new java.math.BigDecimal("500.00"),
+                "PENCIL_DOWN_PAYMENT", "NEXUS_SIMULATION", "PAID", "TEST",
+                java.time.Instant.now().minus(java.time.Duration.ofHours(24)));
+        when(payments.findByReservationIdAndPaymentTypeAndStatus(
+                32L, "PENCIL_DOWN_PAYMENT", "PAID")).thenReturn(Optional.of(downPayment));
         when(reservations.findAll()).thenReturn(List.of(pencil));
 
         service.voidExpiredPendingReservations();

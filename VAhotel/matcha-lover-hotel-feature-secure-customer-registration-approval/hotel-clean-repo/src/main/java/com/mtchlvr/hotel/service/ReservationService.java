@@ -20,11 +20,17 @@ public class ReservationService {
     private final ReservationRepository reservations;
     private final RoomRepository rooms;
     private final UserRepository users;
+    private final PaymentRepository paymentRepository;
+    private final ReservationMutationLock mutationLock;
 
-    public ReservationService(ReservationRepository reservations, RoomRepository rooms, UserRepository users) {
+    public ReservationService(ReservationRepository reservations, RoomRepository rooms, UserRepository users,
+                              PaymentRepository paymentRepository,
+                              ReservationMutationLock mutationLock) {
         this.reservations = reservations;
         this.rooms = rooms;
         this.users = users;
+        this.paymentRepository = paymentRepository;
+        this.mutationLock = mutationLock;
     }
 
     private LocalDateTime start(Reservation r) {
@@ -59,6 +65,13 @@ public class ReservationService {
     @Scheduled(fixedDelay = 60_000, initialDelay = 0)
     @Transactional
     public void voidExpiredPendingReservations() {
+        mutationLock.withLock(() -> {
+            voidExpiredPendingReservationsLocked();
+            return null;
+        });
+    }
+
+    private void voidExpiredPendingReservationsLocked() {
         java.time.ZoneId hotelZone = java.time.ZoneId.of("Asia/Manila");
         LocalDateTime now = LocalDateTime.now(hotelZone).withNano(0);
 
@@ -70,7 +83,15 @@ public class ReservationService {
                 "PENCIL_PENDING_REVIEW".equals(r.getStatus()) ||
                 ("CANCELLATION_REQUESTED".equals(r.getStatus()) &&
                  "PENDING".equals(r.getStatusBeforeCancellation())))
-            .filter(r -> !now.isBefore(start(r)))
+            .filter(r -> {
+                if ("PENCIL_PENDING_REVIEW".equals(r.getStatus())) {
+                    java.time.Instant deadline = r.getId() == null ? null :
+                            paymentsDeadline(r.getId());
+                    return !now.isBefore(start(r)) || deadline == null ||
+                            !now.atZone(hotelZone).toInstant().isBefore(deadline);
+                }
+                return !now.isBefore(start(r));
+            })
             .toList();
 
         if (!expired.isEmpty()) {
@@ -80,6 +101,14 @@ public class ReservationService {
             });
             reservations.saveAll(expired);
         }
+    }
+
+    private java.time.Instant paymentsDeadline(Long reservationId) {
+        return paymentRepository.findByReservationIdAndPaymentTypeAndStatus(
+                reservationId, "PENCIL_DOWN_PAYMENT", "PAID")
+                .map(payment -> payment.getPaidAt() == null ? null :
+                        payment.getPaidAt().plus(java.time.Duration.ofHours(72)))
+                .orElse(null);
     }
 
     public boolean isAvailable(Room room, LocalDate in, LocalDate out) {
@@ -109,6 +138,10 @@ public class ReservationService {
 
     @Transactional
     public Reservation updateStatus(Long reservationId, String status) {
+        return mutationLock.withLock(() -> updateStatusLocked(reservationId, status));
+    }
+
+    private Reservation updateStatusLocked(Long reservationId, String status) {
         if (status == null || !List.of("APPROVED", "REJECTED", "CANCELLED").contains(status)) {
             throw new IllegalArgumentException("Choose a valid reservation status.");
         }
@@ -225,6 +258,11 @@ public class ReservationService {
 
     @Transactional
     public Reservation reserve(String email, Long roomId, LocalDate in, LocalTime inTime,
+                               LocalDate out, LocalTime outTime) {
+        return mutationLock.withLock(() -> reserveLocked(email, roomId, in, inTime, out, outTime));
+    }
+
+    private Reservation reserveLocked(String email, Long roomId, LocalDate in, LocalTime inTime,
                                LocalDate out, LocalTime outTime) {
         // Reservation policy uses fixed hotel check-in/out times for every new booking.
         inTime = DEFAULT_CHECK_IN;

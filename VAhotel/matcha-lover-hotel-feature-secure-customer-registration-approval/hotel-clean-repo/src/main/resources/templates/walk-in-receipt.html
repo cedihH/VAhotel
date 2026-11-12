@@ -1,9 +1,9 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Walk-in receipt · mtchlvr hotel</title><link rel="stylesheet" href="/css/style.css">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Walk-in receipt · VA Hotel</title><link rel="stylesheet" href="/css/style.css">
 <style>
-.receipt{max-width:760px;margin:36px auto;background:#fff;padding:32px;border:1px solid #dce7d5;border-radius:14px}
-.receipt-row{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-bottom:1px solid #e5e9e2}
+.receipt{max-width:760px;margin:36px auto;background:#fff;padding:32px;border:1px solid #DCE5ED;border-radius:14px}
+.receipt-row{display:flex;justify-content:space-between;gap:18px;padding:10px 0;border-bottom:1px solid #dce5ed}
 .receipt-actions{display:flex;gap:12px;margin:20px auto;max-width:760px}
 @media print{.no-print,header,footer{display:none!important}.receipt{margin:0 auto;border:0;box-shadow:none;max-width:none}}
 </style></head>
@@ -12,7 +12,7 @@
 <main class="page-wrap">
 <div th:replace="~{fragments :: alerts}"></div>
 <div class="receipt">
-<span class="eyebrow">MTCHLVR HOTEL · WALK-IN RECEIPT</span>
+<span class="eyebrow">VA Hotel · WALK-IN RECEIPT</span>
 <h1 class="page-title">Reservation #<span th:text="${reservation.id}">1001</span></h1>
 <p><span class="status approved">APPROVED</span> <span class="status approved" th:if="${fullPaymentRecorded}">FULLY PAID</span></p>
 <h2>Guest details</h2>

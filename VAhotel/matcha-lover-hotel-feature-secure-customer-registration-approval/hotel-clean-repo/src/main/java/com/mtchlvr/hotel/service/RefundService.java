@@ -15,8 +15,8 @@ import java.time.Instant;
 import java.util.List;
 
 /**
- * Handles customer-requested refunds for Pencil Bookings voided at check-in
- * because the Online Manager did not make a decision within the review period.
+ * Handles customer-requested refunds for Pencil Bookings voided after the
+ * manager review deadline or when their scheduled check-in arrives.
  * All refund execution is simulated locally; no real payment gateway is called.
  */
 @Service
@@ -44,7 +44,7 @@ public class RefundService {
         if (!"PENCIL".equals(reservation.getBookingType())
                 || !"VOID".equals(reservation.getStatus())) {
             throw new IllegalArgumentException(
-                    "Refund requests are available only for Pencil Bookings voided at check-in.");
+                    "Refund requests are available only for expired Pencil Bookings.");
         }
         if (refundRequests.findByReservationId(reservationId).isPresent()) {
             throw new IllegalArgumentException(

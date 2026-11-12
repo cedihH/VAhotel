@@ -15,6 +15,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.List;
 
 /**
  * Handles the Online Manager's review of Pencil Bookings.
@@ -35,13 +36,16 @@ public class PencilBookingService {
 
     private final ReservationRepository reservations;
     private final PaymentRepository payments;
+    private final ReservationMutationLock mutationLock;
 
     public PencilBookingService(
             ReservationRepository reservations,
-            PaymentRepository payments) {
+            PaymentRepository payments,
+            ReservationMutationLock mutationLock) {
 
         this.reservations = reservations;
         this.payments = payments;
+        this.mutationLock = mutationLock;
     }
 
     /**
@@ -56,6 +60,10 @@ public class PencilBookingService {
      */
     @Transactional
     public Reservation reviewBooking(Long reservationId, String decision) {
+        return mutationLock.withLock(() -> reviewBookingLocked(reservationId, decision));
+    }
+
+    private Reservation reviewBookingLocked(Long reservationId, String decision) {
 
         // Reject unsupported decisions before changing any reservation.
         if (!"APPROVED".equals(decision) && !"REJECTED".equals(decision)) {
@@ -133,6 +141,32 @@ public class PencilBookingService {
         if (!Instant.now().isBefore(reviewDeadline)) {
             throw new IllegalArgumentException(
                     "The 72-hour Pencil Booking review deadline has expired.");
+        }
+
+        if ("APPROVED".equals(decision)) {
+            if (reservation.getRoom() == null || reservation.getRoom().getId() == null) {
+                throw new IllegalArgumentException("This Pencil Booking has no valid room.");
+            }
+            LocalDateTime requestedStart = reservation.getCheckIn().atTime(scheduledCheckIn);
+            LocalDateTime requestedEnd = reservation.getCheckOut().atTime(
+                    reservation.getCheckOutTime() == null ? LocalTime.NOON : reservation.getCheckOutTime());
+            boolean conflict = reservations.findAll().stream()
+                    .filter(other -> other.getId() == null || !other.getId().equals(reservationId))
+                    .filter(other -> other.getRoom() != null && other.getRoom().getId() != null
+                            && other.getRoom().getId().equals(reservation.getRoom().getId()))
+                    .filter(other -> List.of("PENDING", PENDING_REVIEW, "APPROVED", "CANCELLATION_REQUESTED")
+                            .contains(other.getStatus()))
+                    .filter(other -> other.getCheckIn() != null && other.getCheckOut() != null)
+                    .anyMatch(other -> {
+                        LocalDateTime otherStart = other.getCheckIn().atTime(other.getCheckInTime() == null
+                                ? LocalTime.of(14, 0) : other.getCheckInTime());
+                        LocalDateTime otherEnd = other.getCheckOut().atTime(other.getCheckOutTime() == null
+                                ? LocalTime.NOON : other.getCheckOutTime());
+                        return requestedStart.isBefore(otherEnd) && requestedEnd.isAfter(otherStart);
+                    });
+            if (conflict) {
+                throw new IllegalArgumentException("Cannot approve: this room overlaps another active reservation.");
+            }
         }
 
         // Save only the permitted manager decision.

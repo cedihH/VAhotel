@@ -31,13 +31,15 @@ public class HotelController {
     private final RevenueReportService revenueReportService;
     private final RoomPhotoService roomPhotoService;
     private final PasswordPolicy passwordPolicy;
+    private final ReservationMutationLock reservationMutationLock;
 
     public HotelController(RoomRepository rooms, UserRepository users, ReservationRepository reservations,
                            PaymentRepository payments,
                            ReservationService reservationService, PaymentService paymentService,
                            PencilBookingService pencilBookingService,
                            CaptchaService captcha, PasswordEncoder encoder, ReportRepository reports,
-                           RevenueReportService revenueReportService, RoomPhotoService roomPhotoService, PasswordPolicy passwordPolicy) {
+                           RevenueReportService revenueReportService, RoomPhotoService roomPhotoService,
+                           PasswordPolicy passwordPolicy, ReservationMutationLock reservationMutationLock) {
         this.rooms = rooms;
         this.users = users;
         this.reservations = reservations;
@@ -51,6 +53,7 @@ public class HotelController {
         this.revenueReportService = revenueReportService;
         this.roomPhotoService = roomPhotoService;
         this.passwordPolicy = passwordPolicy;
+        this.reservationMutationLock = reservationMutationLock;
     }
 
     /**
@@ -403,6 +406,10 @@ public class HotelController {
 
     @PostMapping("/manager/reservations/{id}/stay-request")
     public String reviewStayChange(@PathVariable Long id, @RequestParam String decision, RedirectAttributes flash) {
+        return reservationMutationLock.withLock(() -> reviewStayChangeLocked(id, decision, flash));
+    }
+
+    private String reviewStayChangeLocked(Long id, String decision, RedirectAttributes flash) {
         Reservation r = reservations.findById(id).orElse(null);
         if (r == null || r.getStayRequestType() == null || !"PENDING".equals(r.getStayRequestStatus())) {
             flash.addFlashAttribute("error", "Pending stay change request not found."); return "redirect:/manager/reservation-requests";

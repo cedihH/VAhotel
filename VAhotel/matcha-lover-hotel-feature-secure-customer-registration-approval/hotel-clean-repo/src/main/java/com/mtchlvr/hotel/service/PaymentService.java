@@ -33,15 +33,18 @@ public class PaymentService {
     private final ReservationService reservationService;
     private final ReservationRepository reservations;
     private final PaymentRepository payments;
+    private final ReservationMutationLock mutationLock;
 
     public PaymentService(
             ReservationService reservationService,
             ReservationRepository reservations,
-            PaymentRepository payments) {
+            PaymentRepository payments,
+            ReservationMutationLock mutationLock) {
 
         this.reservationService = reservationService;
         this.reservations = reservations;
         this.payments = payments;
+        this.mutationLock = mutationLock;
     }
 
     /**
@@ -57,6 +60,13 @@ public class PaymentService {
             java.time.LocalDate checkOut,
             java.time.LocalTime checkOutTime) {
 
+        return mutationLock.withLock(() -> createRegularOnlineBookingLocked(
+                email, roomId, checkIn, checkInTime, checkOut, checkOutTime));
+    }
+
+    private Reservation createRegularOnlineBookingLocked(String email, Long roomId,
+            java.time.LocalDate checkIn, java.time.LocalTime checkInTime,
+            java.time.LocalDate checkOut, java.time.LocalTime checkOutTime) {
         Reservation reservation = reservationService.reserve(
                 email, roomId, checkIn, checkInTime, checkOut, checkOutTime);
 
@@ -96,6 +106,13 @@ public class PaymentService {
             java.time.LocalDate checkOut,
             java.time.LocalTime checkOutTime) {
 
+        return mutationLock.withLock(() -> createPencilBookingLocked(
+                email, roomId, checkIn, checkInTime, checkOut, checkOutTime));
+    }
+
+    private Reservation createPencilBookingLocked(String email, Long roomId,
+            java.time.LocalDate checkIn, java.time.LocalTime checkInTime,
+            java.time.LocalDate checkOut, java.time.LocalTime checkOutTime) {
         Reservation reservation = reservationService.reserve(
                 email, roomId, checkIn, checkInTime, checkOut, checkOutTime);
 

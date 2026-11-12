@@ -2,28 +2,28 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Create a mtchlvr hotel account</title><link rel="stylesheet" href="/css/style.css">
+<title>Create a VA Hotel account</title><link rel="stylesheet" href="/css/style.css">
 <style>
 .registration-page{min-height:100vh;padding:32px 16px;display:grid;place-items:center;background:linear-gradient(135deg,#edf3f8,#f8fafc)}
-.registration-card{width:min(680px,100%);padding:clamp(22px,4vw,42px);border:1px solid #dce7d5;border-radius:22px;background:#fff;box-shadow:0 22px 65px #315b3b18}
-.registration-card h1{margin:8px 0;color:#315b3b}.registration-card p{color:#667568;line-height:1.65}
-.steps{display:flex;gap:7px;margin:22px 0 28px}.steps span{height:5px;flex:1;border-radius:9px;background:#e5ebf1}.steps span.active{background:#82a96f}
-.step-label{font-size:11px;font-weight:850;letter-spacing:.15em;color:#82a96f}.step-panel[hidden]{display:none}
+.registration-card{width:min(680px,100%);padding:clamp(22px,4vw,42px);border:1px solid #DCE5ED;border-radius:22px;background:#fff;box-shadow:0 22px 65px #12365A18}
+.registration-card h1{margin:8px 0;color:#12365A}.registration-card p{color:#65788b;line-height:1.65}
+.steps{display:flex;gap:7px;margin:22px 0 28px}.steps span{height:5px;flex:1;border-radius:9px;background:#e5ebf1}.steps span.active{background:#DF7824}
+.step-label{font-size:11px;font-weight:850;letter-spacing:.15em;color:#DF7824}.step-panel[hidden]{display:none}
 .registration-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.registration-grid .full{grid-column:1/-1}
-.registration-card label{display:grid;gap:7px;margin:12px 0;color:#173b62;font-size:13px;font-weight:700}
-.registration-card input,.registration-card select,.registration-card textarea{width:100%;box-sizing:border-box;padding:13px 14px;border:1px solid #d5e0ea;border-radius:10px;background:#fff;font:inherit;color:#173b62}
+.registration-card label{display:grid;gap:7px;margin:12px 0;color:#12365A;font-size:13px;font-weight:700}
+.registration-card input,.registration-card select,.registration-card textarea{width:100%;box-sizing:border-box;padding:13px 14px;border:1px solid #CFDBE6;border-radius:10px;background:#fff;font:inherit;color:#12365A}
 .registration-card input[type=file]{padding:10px}.actions{display:flex;justify-content:space-between;gap:12px;margin-top:24px}.actions .button{min-width:130px}
-.alert{padding:12px 14px;border-radius:10px;margin:12px 0}.alert.error{background:#fff0ed;color:#9a3e25}.alert.success{background:#eef8ef;color:#276b31}
-.hint{font-size:12px;color:#6b7e90;font-weight:450}.checkline{display:flex!important;grid-template-columns:20px 1fr;align-items:start;gap:10px!important;font-weight:500!important;line-height:1.55}.checkline input{width:17px;height:17px;margin-top:2px}
+.alert{padding:12px 14px;border-radius:10px;margin:12px 0}.alert.error{background:#fff0e9;color:#9a3e25}.alert.success{background:#eaf4f8;color:#164d7b}
+.hint{font-size:12px;color:#65788b;font-weight:450}.checkline{display:flex!important;grid-template-columns:20px 1fr;align-items:start;gap:10px!important;font-weight:500!important;line-height:1.55}.checkline input{width:17px;height:17px;margin-top:2px}
 .preview{max-width:100%;max-height:190px;object-fit:contain;border-radius:10px;display:none;margin-top:8px;border:1px solid #dce5ee}
-.rules{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;padding:0;list-style:none;font-size:12px;color:#65788a}.rules li:before{content:"○";margin-right:7px}.rules li.ok{color:#277a3b}.rules li.ok:before{content:"✓"}
+.rules{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;padding:0;list-style:none;font-size:12px;color:#65788a}.rules li:before{content:"○";margin-right:7px}.rules li.ok{color:#164D7B}.rules li.ok:before{content:"✓"}
 @media(max-width:540px){.registration-grid{grid-template-columns:1fr}.registration-grid .full{grid-column:auto}.actions{flex-direction:column-reverse}.actions .button{width:100%}}
 </style>
 </head>
 <body class="registration-page">
 <main class="registration-card">
-<a class="brand" href="/"><img class="brand-logo" src="/images/mtchlvr-leaf.svg" alt=""><span>mtchlvr <small>HOTEL</small></span></a>
-<span class="step-label">mtchlvr hotel · CUSTOMER REGISTRATION</span>
+<a class="brand" href="/"><img class="brand-logo" src="/images/va-monogram-hd.svg" alt=""><span>VA <small>HOTEL</small></span></a>
+<span class="step-label">VA Hotel · CUSTOMER REGISTRATION</span>
 <h1>Create your account</h1>
 <p>Complete each step to submit your customer registration for Super Admin review.</p>
 <div th:if="${error}" class="alert error" th:text="${error}"></div>
@@ -75,9 +75,9 @@
 <section class="step-panel" id="step5" hidden>
 <div class="step-label">STEP 5 OF 5</div><h2>Review and consent</h2><p>Please read these notices before submitting. Your registration will remain pending until the Super Admin reviews your identity documents.</p>
 <div style="padding:14px;border:1px solid #dce5ee;border-radius:12px;margin:12px 0">
-<strong>Terms and Conditions</strong><p class="hint">You agree to provide accurate information, protect your login credentials, and follow mtchlvr hotel reservation, payment, cancellation, and guest policies. Misuse or false information may result in account rejection or suspension.</p>
-<strong>Privacy Notice</strong><p class="hint">mtchlvr hotel collects your name, email, password hash, and ID images to create and verify your customer account. ID images are stored privately and may only be accessed by authorized Super Admin reviewers. Information must be retained only as long as needed for verification, legal obligations, and legitimate hotel operations, then securely deleted according to the hotel's retention policy.</p>
-<strong>Identity Verification Consent</strong><p class="hint">You authorize mtchlvr hotel's Super Admin to inspect the submitted ID images to verify your identity and decide whether to approve your customer registration.</p>
+<strong>Terms and Conditions</strong><p class="hint">You agree to provide accurate information, protect your login credentials, and follow VA Hotel reservation, payment, cancellation, and guest policies. Misuse or false information may result in account rejection or suspension.</p>
+<strong>Privacy Notice</strong><p class="hint">VA Hotel collects your name, email, password hash, and ID images to create and verify your customer account. ID images are stored privately and may only be accessed by authorized Super Admin reviewers. Information must be retained only as long as needed for verification, legal obligations, and legitimate hotel operations, then securely deleted according to the hotel's retention policy.</p>
+<strong>Identity Verification Consent</strong><p class="hint">You authorize VA Hotel's Super Admin to inspect the submitted ID images to verify your identity and decide whether to approve your customer registration.</p>
 </div>
 <label class="checkline"><input type="checkbox" name="acceptTerms" value="true" required><span>I have read and agree to the Terms and Conditions.</span></label>
 <label class="checkline"><input type="checkbox" name="acceptPrivacy" value="true" required><span>I acknowledge the Privacy Notice.</span></label>

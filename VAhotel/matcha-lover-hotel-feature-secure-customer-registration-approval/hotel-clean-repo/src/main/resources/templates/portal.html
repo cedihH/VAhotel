@@ -3,77 +3,74 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>mtchlvr hotel · Portal Launcher</title>
+  <meta name="theme-color" content="#12365a">
+  <title>VA Hotel · Select a portal</title>
+  <link rel="stylesheet" href="/css/style.css">
   <style>
-    :root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;color:#20351c;background:#fff8cf}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;background:linear-gradient(rgba(24,54,32,.58),rgba(24,54,32,.64)),url('/images/va-campus-background-hd.jpg') center center/cover fixed}
-    .shell{width:min(1180px,calc(100% - 40px));margin:0 auto;padding:34px 0 48px}
-    header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:8px 0 30px}
-    .brand{display:flex;align-items:center;color:#2A7C13}
-    .mark{display:block;width:76px;height:62px;object-fit:contain}
-    .secure{color:#60758b;font-size:12px;font-weight:700}
-    .intro{text-align:center;max-width:780px;margin:32px auto 38px}
-    .eyebrow{color:#e17a24;font-size:11px;font-weight:900;letter-spacing:.2em}
-    .intro h1{margin:12px 0 10px;color:#2A7C13;font-size:clamp(34px,5vw,54px);line-height:1.06;letter-spacing:-.045em}
-    .intro p{margin:0;color:#687b8e;font-size:15px;line-height:1.7}
-    .grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
-    .card{display:flex;flex-direction:column;min-height:320px;padding:24px;border:1px solid #dce5ef;border-radius:20px;background:#fff;box-shadow:0 14px 36px #183b5c0d;transition:transform .2s,box-shadow .2s,border-color .2s}
-    .card:hover{transform:translateY(-5px);border-color:#76C457;box-shadow:0 20px 42px #183b5c18}
-    .icon{display:grid;place-items:center;width:54px;height:54px;margin-bottom:22px;border-radius:16px;background:#edf3f9;color:#2A7C13;font-size:24px}
-    .card.manager .icon{background:#fff2e6;color:#315b3b}
-    .card.admin .icon{background:#edf0f6;color:#315b3b}
-    .card h2{margin:0 0 9px;color:#20351c;font-size:19px;line-height:1.35}
-    .card p{margin:0 0 24px;color:#6d7d8e;font-size:13px;line-height:1.65}
-    .launch{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:auto;min-height:46px;padding:0 12px;border-radius:10px;background:#2A7C13;color:#fff;font-size:12px;font-weight:800;text-decoration:none;text-align:center}
-    .manager .launch{background:#2A7C13}
-    .admin .launch{background:#315b3b}
-    .launch:hover{filter:brightness(1.08)}
-    footer{margin-top:32px;text-align:center;color:#91a0af;font-size:11px}
-    @media(max-width:1050px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-    @media(max-width:580px){.shell{width:min(100% - 28px,480px);padding-top:20px}.grid{grid-template-columns:1fr}.card{min-height:260px}.intro{margin:22px auto 28px}header{padding-bottom:18px}.secure{display:none}}
+    .portal-page{min-height:100vh;color:#12365a;background:linear-gradient(120deg,rgba(10,35,61,.82),rgba(18,54,90,.68)),url('/images/va-campus-background-hd.jpg') center/cover fixed}
+    .portal-shell{width:min(1240px,calc(100% - 48px));margin:auto;padding:28px 0 34px}
+    .portal-header{display:flex;align-items:center;justify-content:space-between;gap:20px;color:#fff;padding:4px 0 22px;border-bottom:1px solid #ffffff35}
+    .portal-brand{display:flex;align-items:center;gap:14px;color:#fff;font-size:18px;font-weight:850;letter-spacing:.12em}
+    .portal-brand img{width:58px;height:48px;padding:5px;box-sizing:border-box;object-fit:contain;border-radius:10px;background:#fff}
+    .portal-secure{padding:9px 13px;border:1px solid #ffffff50;border-radius:999px;color:#fff;font-size:11px;font-weight:750;letter-spacing:.12em;text-transform:uppercase}
+    .portal-intro{max-width:740px;margin:62px auto 36px;text-align:center;color:#fff}
+    .portal-intro .eyebrow{color:#ffc38d}
+    .portal-intro h1{margin:12px 0;font-size:clamp(38px,6vw,64px);line-height:1.04;letter-spacing:-.055em;color:#fff}
+    .portal-intro p{max-width:660px;margin:0 auto;color:#e5edf4;font-size:16px;line-height:1.75}
+    .portal-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+    .portal-card{display:flex;min-height:300px;flex-direction:column;padding:24px;border:1px solid #ffffffb8;border-radius:20px;background:rgba(255,255,255,.97);box-shadow:0 20px 55px #081e3440;transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+    .portal-card:hover{transform:translateY(-4px);border-color:#df7824;box-shadow:0 26px 64px #081e3452}
+    .portal-icon{display:grid;place-items:center;width:54px;height:54px;margin-bottom:22px;border-radius:16px;background:#edf3f8;color:#12365a;font-size:24px}
+    .portal-card:nth-child(2) .portal-icon,.portal-card:nth-child(4) .portal-icon{background:#fff0e3;color:#b85713}
+    .portal-card h2{margin:0 0 9px;color:#12365a;font-size:19px;line-height:1.35}
+    .portal-card p{margin:0 0 24px;color:#5e7184;font-size:13px;line-height:1.7}
+    .portal-launch{display:flex;align-items:center;justify-content:center;width:100%;min-height:48px;margin-top:auto;padding:12px 16px;border:1px solid #12365a;border-radius:11px;background:#12365a;color:#fff;text-align:center;font-size:13px;font-weight:800;line-height:1.35;transition:background .18s ease,border-color .18s ease,transform .18s ease}
+    .portal-launch:hover{transform:translateY(-1px);border-color:#df7824;background:#df7824;color:#fff}
+    .portal-footer{margin-top:28px;color:#e5edf4;text-align:center;font-size:11px;letter-spacing:.04em}
+    @media(max-width:1050px){.portal-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:600px){.portal-shell{width:min(100% - 28px,500px);padding-top:18px}.portal-secure{display:none}.portal-intro{margin:40px auto 26px}.portal-grid{grid-template-columns:1fr}.portal-card{min-height:0;padding:21px}.portal-card p{margin-bottom:18px}.portal-page{background-attachment:scroll}}
   </style>
 </head>
-<body>
-  <div class="shell">
-    <header>
-      <div class="brand"><img class="mark" src="/images/mtchlvr-leaf.svg" alt=""><span>mtchlvr hotel</span></div>
-      <span class="secure">AUTHORIZED PORTAL ACCESS</span>
+<body class="portal-page">
+  <div class="portal-shell">
+    <header class="portal-header">
+      <a class="portal-brand" href="/" aria-label="VA Hotel home"><img src="/images/va-monogram-hd.svg" alt=""><span>VA HOTEL</span></a>
+      <span class="portal-secure">Secure portal selection</span>
     </header>
     <main>
-      <section class="intro">
-        <span class="eyebrow">WELCOME TO mtchlvr hotel</span>
-        <h1>Choose your portal</h1>
-        <p>Select the workspace assigned to your role. Each portal opens in a separate tab and verifies your account permissions before access is granted.</p>
+      <section class="portal-intro">
+        <span class="eyebrow">WELCOME TO VA HOTEL</span>
+        <h1>Your stay, your space.</h1>
+        <p>Choose the workspace that fits your visit. Your account permissions are checked securely when you sign in.</p>
       </section>
-      <section class="grid" aria-label="Available portals">
-        <article class="card">
-          <div class="icon" aria-hidden="true">♙</div>
-          <h2>Customer Portal</h2>
-          <p>Browse rooms, make reservations, manage your bookings, and contact the hotel team.</p>
-          <a class="launch" href="/customer-portal" target="_blank" rel="noopener">Launch Customer Portal <span aria-hidden="true">→</span></a>
+      <section class="portal-grid" aria-label="Available portals">
+        <article class="portal-card">
+          <div class="portal-icon" aria-hidden="true">♙</div>
+          <h2>Guest portal</h2>
+          <p>Explore rooms, request a stay, and manage your reservations.</p>
+          <a class="portal-launch" href="/customer-portal" target="_blank" rel="noopener">Open guest portal</a>
         </article>
-        <article class="card manager">
-          <div class="icon" aria-hidden="true">▤</div>
-          <h2>Online Reservation Manager</h2>
-          <p>Review online reservation requests and Pencil Bookings, and manage the shared hotel workspace.</p>
-          <a class="launch" href="/login?portal=online-manager" target="_blank" rel="noopener">Launch Online Manager <span aria-hidden="true">→</span></a>
+        <article class="portal-card">
+          <div class="portal-icon" aria-hidden="true">▤</div>
+          <h2>Online reservations</h2>
+          <p>Review online requests and Pencil Bookings, and support guest stays.</p>
+          <a class="portal-launch" href="/login?portal=online-manager" target="_blank" rel="noopener">Open online manager</a>
         </article>
-        <article class="card manager">
-          <div class="icon" aria-hidden="true">⌂</div>
-          <h2>On-Site Reservation Manager</h2>
-          <p>Record walk-in reservations and payments, and manage rooms, guests, and reports.</p>
-          <a class="launch" href="/login?portal=onsite-manager" target="_blank" rel="noopener">Launch On-Site Manager <span aria-hidden="true">→</span></a>
+        <article class="portal-card">
+          <div class="portal-icon" aria-hidden="true">⌂</div>
+          <h2>On-site operations</h2>
+          <p>Record walk-in stays, update room inventory, and help guests at the hotel.</p>
+          <a class="portal-launch" href="/login?portal=onsite-manager" target="_blank" rel="noopener">Open on-site manager</a>
         </article>
-        <article class="card admin">
-          <div class="icon" aria-hidden="true">♜</div>
-          <h2>Super Admin Portal</h2>
-          <p>Enter the restricted administration workspace for authorized Super Admin accounts.</p>
-          <a class="launch" href="/login?portal=super-admin" target="_blank" rel="noopener">Launch Super Admin Portal <span aria-hidden="true">→</span></a>
+        <article class="portal-card">
+          <div class="portal-icon" aria-hidden="true">♜</div>
+          <h2>Administration</h2>
+          <p>Review customer applications and manage authorized staff accounts.</p>
+          <a class="portal-launch" href="/login?portal=super-admin" target="_blank" rel="noopener">Open administrator portal</a>
         </article>
       </section>
     </main>
-    <footer>mtchlvr hotel · Secure portal selection</footer>
+    <footer class="portal-footer">VA Hotel · Thoughtful stays, welcoming service</footer>
   </div>
 </body>
 </html>

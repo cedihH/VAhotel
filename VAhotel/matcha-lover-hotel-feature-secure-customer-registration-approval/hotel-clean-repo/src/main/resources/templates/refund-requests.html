@@ -1,10 +1,10 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Refund requests · mtchlvr hotel</title><link rel="stylesheet" href="/css/style.css"></head>
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Refund requests · VA Hotel</title><link rel="stylesheet" href="/css/style.css"></head>
 <body><div th:replace="~{fragments :: nav}"></div>
 <main class="page-wrap manager-page"><div th:replace="~{fragments :: alerts}"></div>
 <section class="manager-content"><span class="eyebrow">MANAGER WORKSPACE</span><h1 class="page-title">Pencil Booking refund requests</h1>
-<p>Review customer refund requests for Pencil Bookings voided at check-in after the 72-hour manager review window. Processing updates the local simulated payment records only.</p>
+<p>Review customer refund requests for Pencil Bookings voided after the 72-hour review deadline or at check-in. Processing updates the local simulated payment records only.</p>
 <div th:if="${#lists.isEmpty(refundRequests)}" class="empty-state"><h2>No refund requests.</h2></div>
 <div class="table-wrap" th:unless="${#lists.isEmpty(refundRequests)}"><table><thead><tr><th>Guest</th><th>Reservation</th><th>Amount</th><th>Submitted</th><th>Status</th><th>Manager action</th></tr></thead><tbody>
 <tr th:each="request : ${refundRequests}">

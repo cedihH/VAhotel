@@ -41,19 +41,22 @@ public class WalkInBookingService {
     private final WalkInGuestRepository walkInGuests;
     private final ReservationRepository reservations;
     private final PaymentRepository payments;
+    private final ReservationMutationLock mutationLock;
 
     public WalkInBookingService(
             ReservationService reservationService,
             RoomRepository rooms,
             WalkInGuestRepository walkInGuests,
             ReservationRepository reservations,
-            PaymentRepository payments) {
+            PaymentRepository payments,
+            ReservationMutationLock mutationLock) {
 
         this.reservationService = reservationService;
         this.rooms = rooms;
         this.walkInGuests = walkInGuests;
         this.reservations = reservations;
         this.payments = payments;
+        this.mutationLock = mutationLock;
     }
 
     /**
@@ -72,6 +75,14 @@ public class WalkInBookingService {
             LocalTime checkInTime,
             LocalDate checkOut,
             LocalTime checkOutTime) {
+
+        return mutationLock.withLock(() -> createWalkInBookingLocked(fullName, email, phone,
+                roomId, checkIn, checkInTime, checkOut, checkOutTime));
+    }
+
+    private Reservation createWalkInBookingLocked(String fullName, String email, String phone,
+            Long roomId, LocalDate checkIn, LocalTime checkInTime,
+            LocalDate checkOut, LocalTime checkOutTime) {
 
         // Validate and normalize the guest's contact information.
         String cleanName = fullName == null ? "" : fullName.trim();

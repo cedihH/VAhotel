@@ -38,7 +38,7 @@ class PaymentServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new PaymentService(reservationService, reservations, payments);
+        service = new PaymentService(reservationService, reservations, payments, new ReservationMutationLock());
     }
 
     @Test

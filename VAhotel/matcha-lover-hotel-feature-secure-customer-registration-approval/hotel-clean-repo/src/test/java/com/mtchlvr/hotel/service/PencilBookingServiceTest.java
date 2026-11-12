@@ -2,6 +2,7 @@ package com.mtchlvr.hotel.service;
 
 import com.mtchlvr.hotel.model.Payment;
 import com.mtchlvr.hotel.model.Reservation;
+import com.mtchlvr.hotel.model.Room;
 import com.mtchlvr.hotel.repo.PaymentRepository;
 import com.mtchlvr.hotel.repo.ReservationRepository;
 
@@ -28,7 +29,7 @@ class PencilBookingServiceTest {
         reservations = mock(ReservationRepository.class);
         payments = mock(PaymentRepository.class);
 
-        service = new PencilBookingService(reservations, payments);
+        service = new PencilBookingService(reservations, payments, new ReservationMutationLock());
 
         reservation = mock(Reservation.class);
 
@@ -43,6 +44,10 @@ class PencilBookingServiceTest {
         when(reservation.getCheckOut()).thenReturn(
                 java.time.LocalDate.now(java.time.ZoneId.of("Asia/Manila")).plusDays(7));
         when(reservation.getCheckInTime()).thenReturn(java.time.LocalTime.of(14, 0));
+        Room room = mock(Room.class);
+        when(room.getId()).thenReturn(8L);
+        when(reservation.getRoom()).thenReturn(room);
+        when(reservations.findAll()).thenReturn(java.util.List.of());
 
         when(reservations.save(reservation)).thenReturn(reservation);
     }

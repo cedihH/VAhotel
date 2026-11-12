@@ -6,7 +6,7 @@ import java.time.Instant;
 
 /**
  * Tracks a customer's refund request for a Pencil Booking voided because
- * the Online Manager did not review it before the scheduled check-in.
+ * its review deadline or scheduled check-in arrived without a decision.
  *
  * Status lifecycle: REQUESTED -> APPROVED -> PROCESSED, or REQUESTED -> REJECTED.
  * Processing is a local Nexus simulation; it does not contact a real gateway.

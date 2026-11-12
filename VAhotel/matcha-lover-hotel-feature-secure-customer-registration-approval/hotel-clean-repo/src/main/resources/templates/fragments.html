@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <body>
 <div th:fragment="nav"><header class="nav">
-  <a class="brand" href="/"><img class="brand-logo" src="/images/mtchlvr-leaf.svg" alt=""><span>mtchlvr <small>HOTEL</small></span></a>
+  <a class="brand" href="/"><img class="brand-logo" src="/images/va-monogram-hd.svg" alt=""><span>VA <small>HOTEL</small></span></a>
   <nav class="main-nav-links">
     <th:block sec:authorize="hasRole('CUSTOMER')">
       <a class="customer-nav-action" href="/rooms">Browse rooms</a>
@@ -42,7 +42,7 @@
 
   <section id="hotel-chat" hidden>
     <header class="chat-header">
-      <div><strong>mtchlvr hotel concierge</strong><small>Here to help with your stay</small></div>
+      <div><strong>VA Hotel concierge</strong><small>Here to help with your stay</small></div>
       <button id="chat-close" type="button" aria-label="Close chat">×</button>
     </header>
     <div id="chat-messages" aria-live="polite">
@@ -56,28 +56,28 @@
   </section>
 
   <style>
-#chat-toggle{position:fixed;right:24px;bottom:24px;width:60px;height:60px;border:1px solid #d8e2d1;border-radius:50%;background:#243b2b;color:#f6f1e7;cursor:pointer;box-shadow:0 12px 30px rgba(20,40,25,.22);z-index:9999;display:grid;place-items:center}
+#chat-toggle{position:fixed;right:24px;bottom:24px;width:60px;height:60px;border:1px solid #d5e0e9;border-radius:50%;background:#12365A;color:#fff;cursor:pointer;box-shadow:0 12px 30px rgba(18,54,90,.22);z-index:9999;display:grid;place-items:center}
 .chat-leaf{font-family:Georgia,serif;font-style:italic;font-size:32px;line-height:1}
-#hotel-chat{position:fixed;right:24px;bottom:96px;width:min(370px,calc(100vw - 32px));height:460px;max-height:72vh;background:#fffdf8;border:1px solid #e4e0d5;border-radius:20px;box-shadow:0 20px 55px rgba(20,40,25,.18);z-index:9999;overflow:hidden;display:flex;flex-direction:column;color:#263328;font:14px Inter,system-ui,sans-serif}
+#hotel-chat{position:fixed;right:24px;bottom:96px;width:min(370px,calc(100vw - 32px));height:460px;max-height:72vh;background:#fff;border:1px solid #dce5ed;border-radius:20px;box-shadow:0 20px 55px rgba(18,54,90,.18);z-index:9999;overflow:hidden;display:flex;flex-direction:column;color:#18334d;font:14px Inter,system-ui,sans-serif}
 #hotel-chat[hidden]{display:none}
-#hotel-chat .chat-header{background:#243b2b;color:#f7f2e6;padding:17px 18px;display:flex;justify-content:space-between;align-items:center}
+#hotel-chat .chat-header{background:#12365A;color:#fff;padding:17px 18px;display:flex;justify-content:space-between;align-items:center}
 #hotel-chat .chat-header strong,#hotel-chat .chat-header small{display:block}
 #hotel-chat .chat-header strong{font-size:14px;letter-spacing:.01em}
 #hotel-chat .chat-header small{margin-top:4px;opacity:.82;font-size:11px}
-#chat-close{background:none;border:0;color:#f7f2e6;font-size:25px;cursor:pointer}
-#chat-messages{padding:16px;flex:1;overflow-y:auto;background:#f7f5ee}
+#chat-close{display:grid;place-items:center;width:38px;height:38px;background:transparent;border:1px solid #ffffff55;border-radius:50%;color:#fff;font-size:24px;text-align:center;cursor:pointer}
+#chat-messages{padding:16px;flex:1;overflow-y:auto;background:#f3f7fb}
 #chat-messages .bot-message,#chat-messages .user-message{padding:11px 13px;border-radius:14px;max-width:86%;overflow-wrap:anywhere;white-space:pre-wrap;line-height:1.55;font-size:13px}
-#chat-messages .bot-message{background:#e9eee1;color:#2d4031;margin:0 0 10px}
-#chat-messages .user-message{background:#243b2b;color:white;margin:0 0 10px auto}
-#chat-form{display:flex;gap:8px;padding:12px;border-top:1px solid #e4e0d5;background:#fffdf8}
-#chat-input{min-width:0;flex:1;padding:12px 15px;border:1px solid #d9dfd3;border-radius:999px;background:#fff;color:#263328}
-#chat-send{background:#243b2b;color:white;border:0;border-radius:999px;padding:0 17px;cursor:pointer;font-weight:700}
+#chat-messages .bot-message{background:#e8f0f7;color:#18334d;margin:0 0 10px}
+#chat-messages .user-message{background:#12365A;color:white;margin:0 0 10px auto}
+#chat-form{display:flex;gap:8px;padding:12px;border-top:1px solid #dce5ed;background:#fff}
+#chat-input{min-width:0;flex:1;padding:12px 15px;border:1px solid #cfdbe6;border-radius:999px;background:#fff;color:#18334d}
+#chat-send{display:inline-flex;align-items:center;justify-content:center;background:#12365A;color:#fff;border:0;border-radius:999px;padding:0 18px;text-align:center;cursor:pointer;font-weight:750}
 #chat-send:disabled{opacity:.6;cursor:wait}
 @media(max-width:580px){#chat-toggle{right:16px;bottom:16px}#hotel-chat{right:16px;bottom:86px}}
 .chat-action-wrap{display:flex;justify-content:flex-start;margin:-3px 0 12px}
-.chat-action-button{border:1px solid #cbd9c4;border-radius:999px;background:#243b2b;color:#fffdf8;padding:10px 16px;font-size:12px;font-weight:700;cursor:pointer;transition:background .2s ease,transform .2s ease}
-.chat-action-button:hover{background:#365b3e;transform:translateY(-1px)}
-.chat-action-button:focus-visible{outline:3px solid #9ab98e;outline-offset:3px}
+.chat-action-button{border:1px solid #12365A;border-radius:999px;background:#12365A;color:#fff;padding:10px 16px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;transition:background .2s ease,transform .2s ease}
+.chat-action-button:hover{background:#df7824;border-color:#df7824;transform:translateY(-1px)}
+.chat-action-button:focus-visible{outline:3px solid #df7824;outline-offset:3px}
 </style>
 
   <script>

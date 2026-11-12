@@ -37,7 +37,7 @@ class WalkInBookingServiceTest {
         reservations = mock(ReservationRepository.class);
         payments = mock(PaymentRepository.class);
         service = new WalkInBookingService(
-                reservationService, rooms, guests, reservations, payments);
+                reservationService, rooms, guests, reservations, payments, new ReservationMutationLock());
 
         room = mock(Room.class);
         when(room.getId()).thenReturn(1L);
